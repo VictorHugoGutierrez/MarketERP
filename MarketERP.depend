@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1748192424 source:c:\users\victor hugo\desktop\marketerp\main.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+	"produto.h"
+
+1748193427 source:c:\users\victor hugo\desktop\marketerp\produto.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+
+1748190862 c:\users\victor hugo\desktop\marketerp\produto.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+
+1748192525 c:\users\victor hugo\desktop\marketerp\produto.h
+

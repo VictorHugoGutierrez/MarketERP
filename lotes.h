@@ -1,5 +1,5 @@
-#ifndef PRODUTO_H
-#define PRODUTO_H
+#ifndef LOTES_H
+#define LOTES_H
 
 typedef struct {
     int id;
@@ -10,7 +10,6 @@ typedef struct {
 
 void mainProduto();
 void listarProdutos();
-Produto buscarProdutoId(int id, int exibe);
-Produto buscarProdutoCodigo(int id, int exibe);
+Produto buscarProdutoId(int id);
 
 #endif

@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1748192424 source:c:\users\victor hugo\desktop\marketerp\main.c
+1748406865 source:c:\users\victor hugo\desktop\marketerp\main.c
 	<stdio.h>
 	<stdlib.h>
 	<locale.h>
 	"produto.h"
+	"lote.h"
 
-1748193427 source:c:\users\victor hugo\desktop\marketerp\produto.c
+1748491603 source:c:\users\victor hugo\desktop\marketerp\produto.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -17,5 +18,23 @@
 	<string.h>
 	<locale.h>
 
-1748192525 c:\users\victor hugo\desktop\marketerp\produto.h
+1748491551 c:\users\victor hugo\desktop\marketerp\produto.h
+
+1748401625 source:c:\users\victor hugo\desktop\marketerp\estoque.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+
+1748361060 c:\users\victor hugo\desktop\marketerp\estoque.h
+
+1748491243 source:c:\users\victor hugo\desktop\marketerp\lotes.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<time.h>
+	"produto.h"
+
+1748405746 c:\users\victor hugo\desktop\marketerp\lote.h
 

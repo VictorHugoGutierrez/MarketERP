@@ -35,10 +35,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="estoque.h" />
-		<Unit filename="lote.h" />
 		<Unit filename="lotes.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="lotes.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

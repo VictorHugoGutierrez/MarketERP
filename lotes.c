@@ -216,7 +216,7 @@ void mainLote(){
     LoteProduto lote;
 
     do{
-        printf("\n=== Controle Lote ===\n");
+        printf("\n=== Controle de Lote ===\n");
         printf("1. Cadastrar\n");
         printf("2. Editar\n");
         printf("3. Remover\n");

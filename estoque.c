@@ -2,51 +2,54 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include "lotes.h"
+#include "produto.h"
 
 #define ARQUIVO "estoque.dat"
 
-typedef enum{
-    ENTRADA,
-    SAIDA
-} TipoMovimentacao;
-
 typedef struct {
-    int dia;
-    int mes;
-    int ano;
-} Data;
-
-typedef struct {
-    int codigo;
-    int codigoProduto;
+    int id;
+    int produtoId;
+    int loteId;
+    char tipo[10];
     int quantidade;
-    TipoMovimentacao tipoMovimentacao;
-    Data dataMovimentacao;
+    int dia, mes, ano;
+    char observacao[100];
 } Estoque;
 
-int obterProximoCodigo(){
-    FILE *f = fopen(ARQUIVO, "rb");
-    Estoque estoque;
-    int id = 0;
+int obterEstoqueProduto(int produtoId) {
+    FILE *f = fopen("lotes.dat", "rb");
+    if (f == NULL) return 0;
 
-    if(f == NULL) return 1;
+    LoteProduto lote;
+    int total = 0;
 
-    while(fread(&estoque, sizeof(Estoque), 1, f)){
-        if(estoque.codigo > id){
-            id = estoque.codigo;
+    while (fread(&lote, sizeof(LoteProduto), 1, f)) {
+        if (lote.produtoId == produtoId && verificarValidade(lote.dia, lote.mes, lote.ano)) {
+            total += lote.quantidade;
         }
     }
 
     fclose(f);
-    return id + 1;
+    return total;
 }
 
-void registraEntradaSaida(Estoque estoque){
-    FILE *f = fopen(ARQUIVO, "ab");
-    fwrite(&estoque, sizeof(Estoque), 1, f);
-    fclose(f);
-}
+void obterEstoqueTodosProdutos(){
+    FILE *f =fopen("produto.dat", "rb");
 
+    if(f == NULL){
+        printf("Nenhum produto cadastrado.\n");
+        return;
+    }
+
+    Produto produto;
+    while (fread(&produto, sizeof(produto), 1, f)){
+        if(produto.id != 0){
+            buscarProdutoId(produto.id, 1);
+            printf("Estoque disponível: %d\n", obterEstoqueProduto(produto.id));
+        }
+    }
+}
 
 void mainEstoque(){
     setlocale(LC_ALL, "Portuguese");
@@ -55,9 +58,10 @@ void mainEstoque(){
     Estoque estoque;
 
     do{
-        printf("\n=== MARKET ERP ===\n");
-        printf("1. Registrar Entrada \n");
-        printf("2. Registrar Saída  \n");
+        printf("\n=== Controle de Estoque ===\n");
+        printf("1. Listar o estoque de todos os produtos \n");
+        printf("2. Listar o estoque de um produto  \n");
+        printf("3. Registrar saída do estoque \n");
         printf("0. Sair \n");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
@@ -65,37 +69,23 @@ void mainEstoque(){
         switch (opcao){
             case 1:
                 system("cls");
-                estoque.codigo = obterProximoCodigo();
-                printf("\nCódigo: %d\n", estoque.codigo);
-                estoque.tipoMovimentacao = 0;
-                printf("\nTipo Movimentação: %s\n", estoque.tipoMovimentacao);
-                printf("\nCódigo do Produto: ");
-                scanf("%d", &estoque.codigoProduto);
-                printf("\nQuantidade: ");
-                scanf("%d", &estoque.quantidade);
-                printf("Data de Entrada (dd/mm/aaaa): ");
-                scanf("%02d/%02d/%d", &estoque.dataMovimentacao.dia, &estoque.dataMovimentacao.mes, &estoque.dataMovimentacao.ano);
-                registraEntradaSaida(estoque);
+                obterEstoqueTodosProdutos();
                 system("pause");
                 system("cls");
                 break;
             case 2:
                 system("cls");
-                estoque.codigo = obterProximoCodigo();
-                printf("\nCódigo: %d\n", estoque.codigo);
-                estoque.tipoMovimentacao = 1;
-                printf("\nTipo Movimentação: %s\n", estoque.tipoMovimentacao);
-                printf("\nCódigo do Produto: ");
-                scanf("%d", &estoque.codigoProduto);
-                printf("\nQuantidade: ");
-                scanf("%d", &estoque.quantidade);
-                printf("Data de Saída (dd/mm/aaaa): ");
-                scanf("%02d/%02d/%d", &estoque.dataMovimentacao.dia, &estoque.dataMovimentacao.mes, &estoque.dataMovimentacao.ano);
-                registraEntradaSaida(estoque);
+                printf("\nDigite o ID do produto: ");
+                scanf("%d", &codigo);
+                Produto produto = buscarProdutoId(codigo, 1);
+                if(produto.id != 0){
+                    printf("Estoque disponível: %d\n", obterEstoqueProduto(codigo));
+                }
                 system("pause");
                 system("cls");
                 break;
             case 0:
+                system("cls");
                 printf("Saindo...\n");
                 system("pause");
                 system("cls");

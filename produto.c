@@ -104,6 +104,7 @@ Produto buscarProdutoId(int id, int exibe){
 
     if(!encontrado){
         printf("Produto com id %d não encontrado...\n", id);
+        produto.id = 0;
         return produto;
     }
     fclose(f);
@@ -152,7 +153,7 @@ void editarProduto(int codigo) {
             printf("ID: %d\n", produto.id);
             printf("Código: %d\n", produto.codigo);
             printf("Nome atual: %s\n", produto.nome);
-            printf("Preço atual: %f\n", produto.preco);
+            printf("Preço atual: %.2f\n", produto.preco);
 
             printf("\nNovo código do Produto: ");
             scanf("%d", &produto.codigo);

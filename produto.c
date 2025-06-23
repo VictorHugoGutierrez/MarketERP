@@ -182,6 +182,7 @@ void editarProduto(int codigo) {
 
 void mainProduto(){
     setlocale(LC_ALL, "Portuguese");
+    system("chcp 1252 > null");
 
     int opcao, codigo, busca;
     Produto produto;
@@ -252,6 +253,7 @@ void mainProduto(){
                 break;
             case 4:
                 system("cls");
+                listarProdutos();
                 printf("\nDigite o código do produto: ");
                 scanf("%d", &codigo);
                 removerProduto(codigo);
@@ -260,11 +262,14 @@ void mainProduto(){
                 break;
             case 5:
                 system("cls");
+                listarProdutos();
                 printf("\nDigite o código do produto: ");
                 scanf("%d", &codigo);
+                system("cls");
                 editarProduto(codigo);
                 system("pause");
                 system("cls");
+                getchar();
                 break;
             case 0:
                 system("cls");

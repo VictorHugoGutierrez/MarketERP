@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <locale.h>
 #include "produto.h"
-#include "estoque.h"
+#include "relatorios.h"
 #include "lotes.h"
 
 int main(){
     setlocale(LC_ALL, "Portuguese");
+    system("chcp 1252 > null");
 
     int opcao;
 
@@ -14,7 +15,7 @@ int main(){
         printf("\n=== MARKET ERP ===\n");
         printf("1. Produtos \n");
         printf("2. Controle de Lote \n");
-        printf("3. Controle de Estoque \n");
+        printf("3. Relatórios / Estoque \n");
         printf("0. Sair \n");
         printf("Escolha uma opção: ");
         scanf("%d", &opcao);
@@ -30,7 +31,7 @@ int main(){
                 break;
             case 3:
                 system("cls");
-                mainEstoque();
+                mainRelatorios();
                 break;
             case 0:
                 system("cls");

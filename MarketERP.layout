@@ -2,14 +2,25 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="relatorios.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="880" topLine="0" />
+			<Cursor1 position="9090" topLine="86" />
 		</Cursor>
+		<Folding>
+			<Collapse line="13" />
+			<Collapse line="33" />
+			<Collapse line="55" />
+			<Collapse line="76" />
+			<Collapse line="120" />
+			<Collapse line="144" />
+			<Collapse line="152" />
+			<Collapse line="175" />
+			<Collapse line="201" />
+		</Folding>
 	</File>
-	<File name="produto.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="produto.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4496" topLine="0" />
+			<Cursor1 position="114" topLine="0" />
 		</Cursor>
 		<Folding>
 			<Collapse line="7" />
@@ -20,40 +31,39 @@
 			<Collapse line="84" />
 			<Collapse line="114" />
 			<Collapse line="140" />
+			<Collapse line="182" />
 		</Folding>
-	</File>
-	<File name="lotes.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5774" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="16" />
-			<Collapse line="33" />
-			<Collapse line="39" />
-			<Collapse line="77" />
-			<Collapse line="104" />
-			<Collapse line="147" />
-			<Collapse line="179" />
-		</Folding>
-	</File>
-	<File name="estoque.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1169" topLine="33" />
-		</Cursor>
-	</File>
-	<File name="lotes.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="258" topLine="0" />
-		</Cursor>
 	</File>
 	<File name="produto.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="261" topLine="0" />
+			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="estoque.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="lotes.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="56" topLine="0" />
+			<Cursor1 position="173" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="214" />
+			<Collapse line="247" />
+			<Collapse line="301" />
+			<Collapse line="334" />
+			<Collapse line="367" />
+		</Folding>
+	</File>
+	<File name="lotes.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="353" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="relatorios.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="84" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="main.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="215" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

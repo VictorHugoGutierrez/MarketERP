@@ -31,10 +31,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="estoque.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="estoque.h" />
 		<Unit filename="lotes.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -46,6 +42,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="produto.h" />
+		<Unit filename="relatorios.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="relatorios.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

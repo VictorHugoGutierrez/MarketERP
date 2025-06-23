@@ -1,13 +1,13 @@
 # depslib dependency file v1.0
-1748835278 source:c:\users\victor hugo\desktop\marketerp\main.c
+1750369750 source:c:\users\victor hugo\desktop\marketerp\main.c
 	<stdio.h>
 	<stdlib.h>
 	<locale.h>
 	"produto.h"
-	"estoque.h"
+	"relatorios.h"
 	"lotes.h"
 
-1748836757 source:c:\users\victor hugo\desktop\marketerp\produto.c
+1748993005 source:c:\users\victor hugo\desktop\marketerp\produto.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -21,7 +21,7 @@
 
 1748491551 c:\users\victor hugo\desktop\marketerp\produto.h
 
-1748836596 source:c:\users\victor hugo\desktop\marketerp\estoque.c
+1750361344 source:c:\users\victor hugo\desktop\marketerp\estoque.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -29,17 +29,29 @@
 	"lotes.h"
 	"produto.h"
 
-1748361060 c:\users\victor hugo\desktop\marketerp\estoque.h
+1750370165 c:\users\victor hugo\desktop\marketerp\estoque.h
 
-1748836189 source:c:\users\victor hugo\desktop\marketerp\lotes.c
+1750380192 source:c:\users\victor hugo\desktop\marketerp\lotes.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<locale.h>
 	<time.h>
 	"produto.h"
+	"lotes.h"
 
 1748834886 c:\users\victor hugo\desktop\marketerp\lote.h
 
-1748836257 c:\users\victor hugo\desktop\marketerp\lotes.h
+1750380171 c:\users\victor hugo\desktop\marketerp\lotes.h
+
+1750380492 source:c:\users\victor hugo\desktop\marketerp\relatorios.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+	<time.h>
+	"lotes.h"
+	"produto.h"
+	"estoque.h"
+
+1750369859 c:\users\victor hugo\desktop\marketerp\relatorios.h
 

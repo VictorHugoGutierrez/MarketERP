@@ -4,15 +4,9 @@
 #include <locale.h>
 #include <time.h>
 #include "produto.h"
+#include "lotes.h"
 
 #define ARQUIVO "lotes.dat"
-
-typedef struct {
-    int id;
-    int produtoId;
-    int quantidade;
-    int dia, mes, ano;
-} LoteProduto;
 
 int obterProximoIdLote(){
     FILE *f = fopen(ARQUIVO, "rb");
@@ -31,7 +25,14 @@ int obterProximoIdLote(){
     return id + 1;
 }
 
-void salvarLote(LoteProduto lote){
+void salvarMovimentacaoLote(LoteProduto lote){
+    time_t t = time(NULL);
+    struct tm *dataAtual = localtime(&t);
+
+    lote.diaMovimentacao = dataAtual->tm_mday;
+    lote.mesMovimentacao = dataAtual->tm_mon + 1;
+    lote.anoMovimentacao = dataAtual->tm_year + 1900;
+
     FILE *f = fopen(ARQUIVO, "ab");
     fwrite(&lote, sizeof(LoteProduto), 1, f);
     fclose(f);
@@ -52,6 +53,40 @@ int verificarValidade(int dia, int mes, int ano) {
     return 0;
 }
 
+const char* tipoParaTexto(TipoMovimentacao tipo){
+    switch (tipo){
+        case ENTRADA:
+            return "Entrada";
+        case SAIDA:
+            return "Saída";
+        default:
+            return "Desconhecido";
+    }
+}
+
+int obterQuantidadeDisponivelLote(int idLoteEntrada){
+    FILE *f = fopen(ARQUIVO, "rb");
+    if (!f) return 0;
+
+    LoteProduto lote;
+    int totalEntrada = 0;
+    int totalSaida = 0;
+
+    while (fread(&lote, sizeof(LoteProduto), 1, f)){
+        if (lote.id == idLoteEntrada && lote.tipo == ENTRADA){
+            totalEntrada = lote.quantidade;
+        } else if (lote.tipo == SAIDA && lote.loteOrigemId == idLoteEntrada){
+            totalSaida += lote.quantidade;
+        }
+    }
+
+    fclose(f);
+    int disponivel = totalEntrada - totalSaida;
+    if(disponivel < 0) disponivel = 0;
+
+    return disponivel;
+}
+
 void listarLotes(){
     FILE *f = fopen(ARQUIVO, "rb");
      if(f == NULL){
@@ -66,13 +101,115 @@ void listarLotes(){
         Produto prod = buscarProdutoId(lote.produtoId, 0);
         printf("Lote ID: %d\n", lote.id);
         printf("Produto: %s\n", prod.nome);
+        printf("Tipo: %s\n", tipoParaTexto(lote.tipo));
         printf("Quantidade: %d\n", lote.quantidade);
-        printf("Validade: %02d/%02d/%04d\n", lote.dia, lote.mes, lote.ano);
-        printf("Status: %s\n", verificarValidade(lote.dia, lote.mes, lote.ano) ? "Válido" : "Vencido");
+        printf("Validade: %02d/%02d/%04d\n", lote.diaValidade, lote.mesValidade, lote.anoValidade);
+        printf("Data: %02d/%02d/%04d\n", lote.diaMovimentacao, lote.mesMovimentacao, lote.anoValidade);
+
+        if(lote.tipo == ENTRADA){
+            int disponivel = obterQuantidadeDisponivelLote(lote.id);
+            printf("Quantidade disponível: %d\n", disponivel);
+            printf("Status: %s\n", verificarValidade(lote.diaValidade, lote.mesValidade, lote.anoValidade) ? "Válido" : "Vencido");
+        }
         printf("-------------------------\n");
     }
 
     fclose(f);
+}
+
+void registrarSaidaLote() {
+    int id, quantidade;
+
+    listarLotes();
+    printf("\nDigite o ID do lote de entrada para saída: ");
+    scanf("%d", &id);
+
+    FILE *f = fopen("lotes.dat", "rb");
+    if (!f) {
+        printf("Erro ao abrir arquivo de lotes.\n");
+        return;
+    }
+
+    LoteProduto loteEntrada;
+    int encontrado = 0;
+
+    while (fread(&loteEntrada, sizeof(LoteProduto), 1, f)) {
+        if (loteEntrada.id == id && loteEntrada.tipo == ENTRADA) {
+            encontrado = 1;
+            break;
+        }
+    }
+    fclose(f);
+
+    if (!encontrado) {
+        printf("Lote de entrada com ID %d não encontrado.\n", id);
+        return;
+    }
+
+    if (!verificarValidade(loteEntrada.diaValidade, loteEntrada.mesValidade, loteEntrada.anoValidade)) {
+        printf("Este lote está vencido e não pode ser utilizado para saída.\n");
+        return;
+    }
+
+    int disponivel = obterQuantidadeDisponivelLote(id);
+    if (disponivel <= 0) {
+        printf("Este lote não possui quantidade disponível.\n");
+        return;
+    }
+
+    printf("Quantidade disponível no lote %d: %d\n", id, disponivel);
+    printf("Quantidade a retirar: ");
+    scanf("%d", &quantidade);
+
+    if (quantidade <= 0 || quantidade > disponivel) {
+        printf("Quantidade inválida ou insuficiente.\n");
+        return;
+    }
+
+    time_t t = time(NULL);
+    struct tm *dataAtual = localtime(&t);
+
+    if (dataAtual->tm_year + 1900 < loteEntrada.anoMovimentacao ||
+        (dataAtual->tm_year + 1900 == loteEntrada.anoMovimentacao && dataAtual->tm_mon + 1 < loteEntrada.mesMovimentacao) ||
+        (dataAtual->tm_year + 1900 == loteEntrada.anoMovimentacao && dataAtual->tm_mon + 1 == loteEntrada.mesMovimentacao && dataAtual->tm_mday < loteEntrada.diaMovimentacao)) {
+        printf("Data da saída não pode ser anterior à data de entrada do lote.\n");
+        return;
+    }
+
+    LoteProduto saida;
+    saida.id = obterProximoIdLote();
+    saida.produtoId = loteEntrada.produtoId;
+    saida.quantidade = quantidade;
+    saida.diaMovimentacao = dataAtual->tm_mday;
+    saida.mesMovimentacao = dataAtual->tm_mon + 1;
+    saida.anoMovimentacao = dataAtual->tm_year + 1900;
+    saida.tipo = SAIDA;
+    saida.loteOrigemId = loteEntrada.id;
+    saida.diaValidade = loteEntrada.diaValidade;
+    saida.mesValidade = loteEntrada.mesValidade;
+    saida.anoValidade = loteEntrada.anoValidade;
+
+    salvarMovimentacaoLote(saida);
+
+    printf("Saída registrada com sucesso.\n");
+}
+
+int temSaidasAssociadas(int idLoteEntrada) {
+    FILE *f = fopen(ARQUIVO, "rb");
+    if (!f) return 0;
+
+    LoteProduto lote;
+    int encontrado = 0;
+
+    while (fread(&lote, sizeof(LoteProduto), 1, f)) {
+        if (lote.tipo == SAIDA && lote.loteOrigemId == idLoteEntrada) {
+            encontrado = 1;
+            break;
+        }
+    }
+
+    fclose(f);
+    return encontrado;
 }
 
 void removerLote(int id){
@@ -83,10 +220,16 @@ void removerLote(int id){
     int encontrado = 0;
 
     while (fread(&lote, sizeof(LoteProduto), 1, f)) {
-        if (lote.id != id) {
-            fwrite(&lote, sizeof(LoteProduto), 1, temp);
-        } else {
+        if (lote.id == id) {
             encontrado = 1;
+
+            if(lote.tipo == ENTRADA && temSaidasAssociadas(lote.id)){
+                printf("Este Lote possui saídas associadas e não pode ser removido.\n");
+                fwrite(&lote, sizeof(LoteProduto), 1, temp);
+                continue;
+            }
+        } else {
+            fwrite(&lote, sizeof(LoteProduto), 1, temp);
         }
     }
 
@@ -113,11 +256,19 @@ void editarLote(int id) {
         if (lote.id == id) {
             encontrado = 1;
 
+            if (lote.tipo == ENTRADA && temSaidasAssociadas(lote.id)) {
+                printf("Este lote possui saídas associadas e não pode ser editado.\n");
+                fwrite(&lote, sizeof(LoteProduto), 1, temp);
+                continue;
+            }
+
             printf("\n--- Editar Lote ---\n");
             printf("ID atual: %d\n", lote.id);
             printf("Produto ID atual: %d\n", lote.produtoId);
             printf("Quantidade atual: %d\n", lote.quantidade);
-            printf("Validade atual: %02d/%02d/%04d\n", lote.dia, lote.mes, lote.ano);
+            printf("Validade atual: %02d/%02d/%04d\n", lote.diaValidade, lote.mesValidade, lote.anoValidade);
+            printf("Data atual: %02d/%02d/%04d\n", lote.diaMovimentacao, lote.mesMovimentacao, lote.anoMovimentacao);
+            printf("Tipo (não pode ser alterado): %s\n", tipoParaTexto(lote.tipo));
 
             printf("\nNovo Produto ID: ");
             scanf("%d", &lote.produtoId);
@@ -126,7 +277,10 @@ void editarLote(int id) {
             scanf("%d", &lote.quantidade);
 
             printf("Nova Data de Validade (dd/mm/aaaa): ");
-            scanf("%d/%d/%d", &lote.dia, &lote.mes, &lote.ano);
+            scanf("%d/%d/%d", &lote.diaValidade, &lote.mesValidade, &lote.anoValidade);
+
+            printf("Nova Data (dd/mm/aaaa): ");
+            scanf("%d/%d/%d", &lote.diaMovimentacao, &lote.mesMovimentacao, &lote.anoMovimentacao);
         }
 
         fwrite(&lote, sizeof(LoteProduto), 1, temp);
@@ -162,8 +316,9 @@ void buscarLoteId(int id) {
             printf("Lote ID: %d\n", lote.id);
             printf("Produto: %s\n", prod.nome);
             printf("Quantidade: %d\n", lote.quantidade);
-            printf("Validade: %02d/%02d/%04d\n", lote.dia, lote.mes, lote.ano);
-            printf("Status: %s\n", verificarValidade(lote.dia, lote.mes, lote.ano) ? "Válido" : "Vencido");
+            printf("Data: %02d/%02d/%04d\n", lote.diaMovimentacao, lote.mesMovimentacao, lote.anoMovimentacao);
+            printf("Validade: %02d/%02d/%04d\n", lote.diaValidade, lote.mesValidade, lote.anoValidade);
+            printf("Status: %s\n", verificarValidade(lote.diaValidade, lote.mesValidade, lote.anoValidade) ? "Válido" : "Vencido");
             printf("-------------------------\n");
             encontrado = 1;
             break;
@@ -195,8 +350,9 @@ void buscarLotesProdutoCodigo(int codigoProduto) {
             printf("Lote ID: %d\n", lote.id);
             printf("Produto: %s\n", prod.nome);
             printf("Quantidade: %d\n", lote.quantidade);
-            printf("Validade: %02d/%02d/%04d\n", lote.dia, lote.mes, lote.ano);
-            printf("Status: %s\n", verificarValidade(lote.dia, lote.mes, lote.ano) ? "Válido" : "Vencido");
+            printf("Data: %02d/%02d/%04d\n", lote.diaMovimentacao, lote.mesMovimentacao, lote.anoMovimentacao);
+            printf("Validade: %02d/%02d/%04d\n", lote.diaValidade, lote.mesValidade, lote.anoValidade);
+            printf("Status: %s\n", verificarValidade(lote.diaValidade, lote.mesValidade, lote.anoValidade) ? "Válido" : "Vencido");
             printf("-------------------------\n");
             encontrado = 1;
         }
@@ -211,8 +367,9 @@ void buscarLotesProdutoCodigo(int codigoProduto) {
 
 void mainLote(){
     setlocale(LC_ALL, "Portuguese");
+    system("chcp 1252 > null");
 
-    int opcao, id, opcao2;
+    int opcao, id, busca, cadastro;
     LoteProduto lote;
 
     do{
@@ -229,15 +386,37 @@ void mainLote(){
         switch (opcao){
             case 1:
                 system("cls");
-                listarProdutos();
-                printf("\nEscolha um produto: ");
-                scanf("%d", &lote.produtoId);
-                printf("Quantidade: ");
-                scanf("%d", &lote.quantidade);
-                printf("Data de Validade (dd/mm/aaaa): ");
-                scanf("%d/%d/%d", &lote.dia, &lote.mes, &lote.ano);
-                lote.id = obterProximoIdLote();
-                salvarLote(lote);
+                printf("\n1. Entrada");
+                printf("\n2. Saída");
+                printf("\n0. Sair");
+                printf("\nDeseja fazer qual tipo de cadastro: ");
+                scanf("%d", &cadastro);
+
+                switch (cadastro){
+                    case 1:
+                        system("cls");
+                        listarProdutos();
+                        printf("\nEscolha um produto pelo ID: ");
+                        scanf("%d", &lote.produtoId);
+                        printf("Quantidade: ");
+                        scanf("%d", &lote.quantidade);
+                        printf("Data de Validade (dd/mm/aaaa): ");
+                        scanf("%d/%d/%d", &lote.diaValidade, &lote.mesValidade, &lote.anoValidade);
+                        lote.id = obterProximoIdLote();
+                        lote.tipo = ENTRADA;
+                        salvarMovimentacaoLote(lote);
+                        break;
+                    case 2:
+                        system("cls");
+                        registrarSaidaLote();
+                        break;
+                    case 0:
+                        system("cls");
+                        printf("\nSaindo...\n");
+                        break;
+                    default:
+                        printf("Opção inválida!\n");
+                }
                 break;
             case 2:
                 system("cls");
@@ -261,20 +440,20 @@ void mainLote(){
                 printf("\n2. Código do Produto");
                 printf("\n0. Sair ");
                 printf("\nEscolha a opção desejada: ");
-                scanf("%d", &opcao2);
+                scanf("%d", &busca);
 
-                switch (opcao2){
+                switch (busca){
                     case 1:
                         system("cls");
                         printf("\nDigite o Id do Lote: ");
-                        scanf("%d", &opcao2);
-                        buscarLoteId(opcao2);
+                        scanf("%d", &busca);
+                        buscarLoteId(busca);
                         break;
                     case 2:
                         system("cls");
                         printf("\nDigite o Código do Produto: ");
-                        scanf("%d", &opcao2);
-                        buscarLotesProdutoCodigo(opcao2);
+                        scanf("%d", &busca);
+                        buscarLotesProdutoCodigo(busca);
                         break;
                     case 0:
                         system("cls");

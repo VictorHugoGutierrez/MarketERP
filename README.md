@@ -2,7 +2,7 @@
 
 ## Visão Geral do Projeto
 
-Este repositório contém um sistema de gerenciamento de estoque, desenvolvido como parte do Projeto Interdisciplinar para as disciplinas de Algoritmos e Programação, Linguagem de Programação 1 e Gestão de Projetos do Instituo Federal de São Paulo no campus de Campinas. O programa visa demonstrar o controle de entradas e saídas de produtos e a organização do estoque em um ambiente de console.
+Este repositório contém um sistema de gerenciamento de estoque, desenvolvido como parte do Projeto Interdisciplinar para as disciplinas de Algoritmos e Programação, Linguagem de Programação 1 e Gestão de Projetos do Instituto Federal de São Paulo no campus de Campinas. O programa visa demonstrar o controle de entradas e saídas de produtos e a organização do estoque em um ambiente de console.
 
 ## Estrutura do Repositório
 
